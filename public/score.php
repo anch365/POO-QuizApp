@@ -1,33 +1,24 @@
 <?php
 require_once "../utils/isConnected.php";
 require_once "../utils/db_connect.php";
+require_once "../utils/autoloader.php";
 
-// Vérification
-if (!isset($_SESSION['quiz']['score'], $_SESSION['quiz']['start_time'])) {
-    header("Location: ./quiz.php");
+$quiz = $_SESSION['quiz'] ?? null;
+
+if (!$quiz) {
+    header("Location: ./index.php");
     exit();
 }
 
-// Données — stockées DANS DES VARIABLES avant de nettoyer la session
-$score = $_SESSION['quiz']['score'];
-$nbQuestions = count($_SESSION['quiz']['question_ids']);
-$start = $_SESSION['quiz']['start_time'];
-$end = time();
-$temps_total = $end - $start;
+$score = $quiz->getScore();
+$nbQuestions = $quiz->getTotal();
+$temps_total = $quiz->getTempsEcoule();
 $pourcentage = $nbQuestions > 0 ? round(($score / $nbQuestions) * 100) : 0;
 $pourcentageFaux = 100 - $pourcentage;
 
-// Insertion en base
-$request = $db->prepare("INSERT INTO score (utilisateur_id, score, temps_total)
-        VALUES (:utilisateur_id, :score, :temps_total)");
-$request->execute([
-    ":utilisateur_id" => $_SESSION['user']['id'],
-    ":score" => $score,
-    ":temps_total" => $temps_total
-]);
-
-// 🧹 Nettoyer la session quiz pour éviter que le timer continue
+// Nettoyer la session
 unset($_SESSION['quiz']);
+
 ?>
 
 <?php require_once "../_partials/_header.php"; ?>
@@ -40,6 +31,7 @@ unset($_SESSION['quiz']);
             <p class="text-xl">Ton score : <strong class="text-2xl"><?= $score ?>/<?= $nbQuestions ?></strong></p>
             <p>Temps total : <strong><?= $temps_total ?> secondes</strong></p>
         </div>
+
         <!-- Graphique -->
         <div class="flex items-end gap-8 w-full justify-center lg:flex-row lg:gap-32">
             <div class="flex flex-col items-center gap-1">
@@ -47,12 +39,14 @@ unset($_SESSION['quiz']);
                 <div class="w-16 bg-green-500 rounded-t-lg" style="height: <?= $pourcentage * 1.2 ?>px"></div>
                 <span class="text-xs">✅ Correct</span>
             </div>
+
             <div class="flex flex-col items-center gap-1">
                 <span class="font-bold text-red-500"><?= $nbQuestions - $score ?></span>
                 <div class="w-16 bg-red-400 rounded-t-lg" style="height: <?= $pourcentageFaux * 1.2 ?>px"></div>
                 <span class="text-xs">❌ Incorrect</span>
             </div>
         </div>
+        
         <p class="text-lg font-bold"><?= $pourcentage ?>% de réussite</p>
     </div>
 

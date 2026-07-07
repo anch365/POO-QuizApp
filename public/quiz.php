@@ -59,18 +59,18 @@ require_once "../_partials/_header.php";
 ?>
 <main>
     <form action="../process/quiz.php" method="POST" id="quizForm"
-        data-bonne-reponse="<?= $bonneReponseId ?>"
-        data-bon-texte="<?= htmlspecialchars($bonneReponseTexte) ?>">
+        data-bonne-reponse="<?= $question->getBonneReponse()->getId() ?>"
+        data-bon-texte="<?= htmlspecialchars($question->getBonneReponse()->getTexte()) ?>">
 
         <section class="flex flex-col gap-8 items-center">
 
             <div class="flex flex-col items-center gap-8 md:flex-row md:gap-32">
                 <div class="flex flex-col items-center rounded-2xl overflow-hidden bg-baume-ivoire text-black py-8">
                     <div class="bg-white overflow-hidden">
-                        <img src="../assets/imgs/<?= $question['emplacement_image'] ?>" alt="Une image respective pour chaque question" class="w-64 h-48 object-cover md:w-96">
+                        <img src="../assets/imgs/<?= $question->getImage() ?>" alt="Une image respective pour chaque question" class="w-64 h-48 object-cover md:w-96">
                     </div>
                     <div class="flex flex-col gap-8 px-6 py-8">
-                        <p class="font-light tracking-wider"><?= $question['question'] ?></p>
+                        <p class="font-light tracking-wider"><?= htmlspecialchars($question->getTexte()) ?></p>
                     </div>
                 </div>
 
@@ -81,14 +81,14 @@ require_once "../_partials/_header.php";
                         <span class="text-sm">secondes restantes</span>
                     </div>
 
-                    <?php foreach ($reponses as $reponse) { ?>
+                    <?php foreach ($question->getReponses() as $reponse) { ?>
 
                         <label class="cursor-pointer">
                             <input type="radio" name="reponse" class="peer hidden" value="<?= $reponse['id'] ?>">
 
                             <div
                                 class="bg-améthyste rounded-xl py-4 border transition-all duration-20 peer-checked:border-pink-400 peer-checked:border-3">
-                                <?= $reponse['reponse'] ?>
+                                <?= htmlspecialchars($reponse->getTexte()) ?>
                             </div>
 
                         </label>
@@ -97,7 +97,7 @@ require_once "../_partials/_header.php";
                     <input
                         type="hidden"
                         name="question_id"
-                        value="<?= $question['id'] ?>">
+                        value="<?= $question->getId() ?>">
                 </div>
             </div>
             <div id="feedbackZone" class="hidden aclonica text-center mt-4 p-4 rounded-xl text-lg font-bold"></div>
