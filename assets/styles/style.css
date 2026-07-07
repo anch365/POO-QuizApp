@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+.bg-mauve-btn{
+    background-color: #E1A6F1;
+}
+
+.mauve{
+  background-color: #E1A6F1;
+}
+
+.bg-améthyste{
+    background-color: #2A1E5C;
+}
+
+.bg-baume-ivoire{
+    background-color: #F8F4E3;
+}
+
+.aclonica {
+  font-family: "Aclonica", sans-serif;
+}
+
+.gayathri {
+  font-family: "Gayathri", sans-serif;
+  font-size: 1.2em;
+}
+
