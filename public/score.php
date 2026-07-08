@@ -1,7 +1,7 @@
 <?php
+require_once "../utils/autoloader.php";
 require_once "../utils/isConnected.php";
 require_once "../utils/db_connect.php";
-require_once "../utils/autoloader.php";
 
 $quiz = $_SESSION['quiz'] ?? null;
 
@@ -46,7 +46,7 @@ unset($_SESSION['quiz']);
                 <span class="text-xs">❌ Incorrect</span>
             </div>
         </div>
-        
+
         <p class="text-lg font-bold"><?= $pourcentage ?>% de réussite</p>
     </div>
 
