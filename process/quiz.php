@@ -1,9 +1,9 @@
 <?php
 session_start();
+require_once "../utils/autoloader.php";
+require_once "../utils/db_connect.php";
 require_once "../utils/isConnected.php";
 require_once "../utils/quizStarted.php";
-require_once "../utils/db_connect.php";
-require_once "../utils/autoloader.php";
 
 $quiz = $_SESSION['quiz'];
 

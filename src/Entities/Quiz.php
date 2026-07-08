@@ -17,8 +17,8 @@ class Quiz
         $this->startTime = time();
         $this->lastResult = null;
     }
-    
-    // LES GETTERS DE BASE
+
+// LES GETTERS DE BASE
     public function getCurrentQuestionId(): ?int
     {
         if ($this->currentIndex >= count($this->questionIds)) {

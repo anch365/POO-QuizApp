@@ -1,57 +1,18 @@
 <?php
+require_once "../utils/autoloader.php";      // ← EN PREMIER (pour charger les classes)
 require_once "../utils/isConnected.php";
-
 require_once "../utils/quizStarted.php";
+require_once "../utils/db_connect.php";
 
-// Sécuriser l'Id
-if ($_SERVER['REQUEST_METHOD'] !== "GET") {
+$quiz = $_SESSION['quiz'];
 
-    header("Location: ./quiz.php?error=bad-method");
-    exit();
-}
-
-// Vérifier que l'index est valide
-if ($_SESSION['quiz']['current_index'] >= count($_SESSION['quiz']['question_ids'])) {
+if ($quiz->isFinished()) {
     header("Location: ../public/score.php");
     exit();
 }
 
-$currentIndex = $_SESSION['quiz']['current_index'];
-$id = $_SESSION['quiz']['question_ids'][$currentIndex];
-
-// Requête
-require_once "../utils/db_connect.php";
-$request = $db->prepare("SELECT * FROM questionnement WHERE id = :id");
-$request->execute([
-    ':id' => $id
-]);
-
-$question = $request->fetch(PDO::FETCH_ASSOC);
-
-$request = $db->prepare("SELECT * FROM reponse WHERE question_id = :id");
-$request->execute([
-    ':id' => $id
-]);
-
-$reponses = $request->fetchAll(PDO::FETCH_ASSOC);
-
-// Trouver l'ID de la bonne réponse
-$bonneReponseId = null;
-foreach ($reponses as $rep) {
-    if ($rep['est_ce_vrai'] == 1) {
-        $bonneReponseId = $rep['id'];
-        break;
-    }
-}
-
-// Récupérer aussi le TEXTE de la bonne réponse
-$bonneReponseTexte = '';
-foreach ($reponses as $rep) {
-    if ($rep['id'] == $bonneReponseId) {
-        $bonneReponseTexte = $rep['reponse'];
-        break;
-    }
-}
+$repo = new QuizRepository($db);
+$question = $repo->loadQuestion($quiz->getCurrentQuestionId());
 ?>
 
 <?php
@@ -84,7 +45,7 @@ require_once "../_partials/_header.php";
                     <?php foreach ($question->getReponses() as $reponse) { ?>
 
                         <label class="cursor-pointer">
-                            <input type="radio" name="reponse" class="peer hidden" value="<?= $reponse['id'] ?>">
+                            <input type="radio" name="reponse" class="peer hidden" value="<?= $reponse->getId() ?>">
 
                             <div
                                 class="bg-améthyste rounded-xl py-4 border transition-all duration-20 peer-checked:border-pink-400 peer-checked:border-3">
