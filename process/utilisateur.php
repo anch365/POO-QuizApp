@@ -28,7 +28,7 @@ $motdepasse = htmlspecialchars(strip_tags(trim($_POST["motdepasse"])));
 // ETAPE 2 : METTRE LES DONNEE DU PATIENT EN BDD (PDO traduit php pour pouvoir communiquer avec la BDD)
 require_once "../utils/db_connect.php";
 
-$request = $db->prepare("INSERT INTO quiz_app.utilisateur
+$request = $db->prepare("INSERT INTO utilisateur
 (pseudo, email, mot_de_passe) 
 VALUES(:pseudo, :email, :mot_de_passe)");
 
